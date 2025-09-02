@@ -1,29 +1,30 @@
-// app/myevents/page.tsx
-'use client';
-// In the app/myevents/page.tsx file
+"use client";
 
-// In the app/myevents/page.tsx file
+import { useEffect, useState } from "react";
 
-import { useEffect, useState } from 'react';
+export const dynamic = "force-dynamic"; // ✅ avoid prerender issues
 
 const MyEventPage = () => {
   const [event, setEvent] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the event dynamically
     const fetchEventData = async () => {
-      const res = await fetch('/api/event'); // Example: fetch your event data from an API route
-      const data = await res.json();
-      setEvent(data.event); // Assuming the response contains the event
+      try {
+        const res = await fetch("/api/event", { cache: "no-store" }); // ✅ prevents cached build-time fetch
+        if (!res.ok) throw new Error("Failed to fetch event data");
+        const data = await res.json();
+        setEvent(data.event);
+      } catch (err) {
+        console.error("Error fetching event:", err);
+      }
     };
 
     fetchEventData();
-  }, []);
+  }, []); // ✅ safe: runs only once
 
   return (
     <div>
-      <h1>Event: {event}</h1>
-      {/* Render your event data here */}
+      <h1>Event: {event ?? "Loading..."}</h1>
     </div>
   );
 };

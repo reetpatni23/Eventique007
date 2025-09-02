@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Body from './landing';
 import Header from './../components/header';
 import { useRouter } from 'next/navigation';
@@ -9,9 +9,9 @@ export default function Landing() {
 
   useEffect(() => {
     if (localStorage.getItem('userInfo') === null) {
-      return router.push('/login');
+      router.push('/login');
     }
-  });
+  }, [router]); // ✅ run once on mount & include router
 
   return (
     <div>
