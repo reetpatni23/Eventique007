@@ -1,25 +1,30 @@
 "use client";
 import { Client, Account, Databases, Storage, ID } from "appwrite";
 
+// app/constants/appwrite_config.ts
+
+
+
+const PROJECT_ID = "68af42630007670eb3f0"; // e.g. 68af42630007670eb3f0
+const ENDPOINT = "https://nyc.cloud.appwrite.io/v1";
+
+const SUCCESS = typeof window !== 'undefined'
+  ? `${window.location.origin}/login/success`
+  : `https://eventique007.appwrite.network/login/success`; // fallback for SSR
+
+const FAILURE = typeof window !== 'undefined'
+  ? `${window.location.origin}/login/failure`
+  : `https://eventique007.appwrite.network/login/failure`;
+
 export class AppwriteConfig {
-  client: Client;
-  account: Account;
-  databases: Databases;
-  storage: Storage;
+  client = new Client().setEndpoint(ENDPOINT).setProject(PROJECT_ID);
+  account = new Account(this.client);
+  databases = new Databases(this.client);
+  storage = new Storage(this.client);
 
-  databaseId = "68b48a43000746da320c";      // 🔹 replace with your Appwrite DB ID
-  activeCollId = "68b48f1e000a58d3f9f0";    // 🔹 replace with your Collection ID
-  bannerBucketId = "68b48a12000497b1fb8";   // 🔹 replace with your Storage bucket ID
-
-  constructor() {
-    this.client = new Client()
-      .setEndpoint("https://nyc.cloud.appwrite.io/v1") // 🔹 or your endpoint
-      .setProject("68b097340015d3840771");             // 🔹 your Project ID
-
-    this.account = new Account(this.client);
-    this.databases = new Databases(this.client);
-    this.storage = new Storage(this.client);
-  }
+  databaseId = ServerConfig.databaseId;
+  activeCollId = ServerConfig.collectionId;
+  bannerBucketId = ServerConfig.bucketId;
 
   // ✅ Get Current User
   async getCurUser() {
@@ -33,15 +38,15 @@ export class AppwriteConfig {
 
   // ✅ Google Login (redirects to /success)
   async googlelog() {
-    const successUrl = `https://task-management-main-pcgw0qc9t-rishitaa01s-projects.vercel.app/success`;
-    const failureUrl = `https://task-management-main-pcgw0qc9t-rishitaa01s-projects.vercel.app/login`;
+    const successUrl = `https://eventique007.appwrite.network/login/success`;
+    const failureUrl = `https://eventique007.appwrite.network/login/failure`;
     return this.account.createOAuth2Session("google", successUrl, failureUrl);
   }
 
   // ✅ GitHub Login (redirects to /success)
   async githublog() {
-    const successUrl = `https://task-management-main-pcgw0qc9t-rishitaa01s-projects.vercel.app/success`;
-    const failureUrl = `https://task-management-main-pcgw0qc9t-rishitaa01s-projects.vercel.app/login`;
+    const successUrl = `https://eventique007.appwrite.network/login/success`;
+    const failureUrl = `https://eventique007.appwrite.network/login/failure`;
     return this.account.createOAuth2Session("github", successUrl, failureUrl);
   }
 
